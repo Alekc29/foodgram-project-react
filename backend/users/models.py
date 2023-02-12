@@ -28,10 +28,6 @@ class User(AbstractUser):
         blank=True,
     )
 
-    @property
-    def is_subscribed(self):
-        return
-
     def __str__(self):
         return self.username
     

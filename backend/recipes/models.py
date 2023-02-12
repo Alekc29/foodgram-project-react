@@ -30,12 +30,6 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField('Название', max_length=200)
     measurement_unit = models.CharField('Единицы измерения', max_length=200)
-    amount = models.PositiveSmallIntegerField(
-        verbose_name='Количество',
-        validators=[
-            MinValueValidator(1, message='Количество должно быть больше 0!')
-        ]
-    )
     
     
 class Recipe(models.Model):
@@ -54,6 +48,7 @@ class Recipe(models.Model):
     text = models.TextField('Текстовое описание')
     ingredients = models.ManyToManyField(
         Ingredient,
+        through='IngredientInRecipe',
         related_name='recipes',
         verbose_name='Ингредиенты'
     )
@@ -67,10 +62,20 @@ class Recipe(models.Model):
         validators=[MinValueValidator(1, message='Минимальное значение 1!')]
     )
 
-    @property
-    def is_favorited(self):
-        return
-    
-    @property
-    def is_in_shopping_cart(self):
-        return
+
+class IngredientInRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='ingredient_list',
+        verbose_name='Рецепт',
+    )
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        verbose_name='Ингредиент',
+    )
+    amount = models.PositiveSmallIntegerField(
+        'Количество',
+        validators=[MinValueValidator(1, message='Минимальное количество 1!')]
+    )
