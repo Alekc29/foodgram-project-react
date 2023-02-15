@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'rest_framework',
-    'recipes.apps.RecipesConfig'
+    'api.apps.ApiConfig',
+    'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
 ]
 
