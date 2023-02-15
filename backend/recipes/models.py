@@ -78,6 +78,15 @@ class Recipe(models.Model):
         validators=[MinValueValidator(1, message='Минимальное значение 1!')]
     )
 
+    class Meta:
+        ordering = ['-pub_date']
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
+    def __str__(self):
+        return f'{self.name[:50]}'
+
+
 
 class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
@@ -137,3 +146,31 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f'{self.recipe} в избранном у {self.user}'
+        
+
+class ShoppingCart(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        related_name='shopping_cart'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name='Рецепты',
+        related_name='shopping_cart'
+    )
+
+    class Meta:
+        verbose_name = 'Рецепт в корзине'
+        verbose_name_plural = 'Рецепты в корзине'
+        constraints = (
+            UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique recipe in shopping cart'
+            ),
+        )
+
+    def __str__(self):
+        return f'{self.recipe} в корзине у {self.user}'
