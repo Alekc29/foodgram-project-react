@@ -20,8 +20,8 @@ class TagAdmin(ModelAdmin):
 
 @register(Recipe)
 class RecipeAdmin(ModelAdmin):
-    list_display = ('name', 'author', 'pub_date', 'display_tags', 'favorite')
-    list_filter = ('name', 'author', 'tags')
+    list_display = ('name', 'author', 'favorite')
+    list_filter = ('name', 'author')
     search_fields = ('name',)
     readonly_fields = ('favorite',)
     fields = ('image',
