@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'rest_framework',
-    #'rest_framework_simplejwt',
+    'rest_framework.authtoken',
+    'djoser',
     'api.apps.ApiConfig',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
@@ -144,14 +145,23 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 6,
 
-    #'DEFAULT_AUTHENTICATION_CLASSES': (
-    #    'rest_framework_simplejwt.authentication.JWTAuthentication',
-    #),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
-#SIMPLE_JWT = {
-#    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-#    'AUTH_HEADER_TYPES': ('Bearer',),
-#}
+DJOSER = {
+    'HIDE_USERS': False,
+    "LOGIN_FIELD": "email",
+    'PERMISSIONS': {
+        'user_list': ['rest_framework.permissions.AllowAny'],
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly']
+    },
+    "SERIALIZERS": {
+        "user_create": "api.serializers.users.UsersCreateSerializer",
+        "user": "api.serializers.users.UsersSerializer",
+        "current_user": "api.serializers.users.UsersSerializer",
+    },
+}
