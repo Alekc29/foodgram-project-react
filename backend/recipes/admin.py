@@ -1,9 +1,6 @@
 from django.contrib.admin import ModelAdmin, register
 
-from recipes.models import (Favorite,
-                            Ingredient,
-                            Recipe,
-                            IngredientInRecipe,
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
 
 
@@ -39,8 +36,8 @@ class RecipeAdmin(ModelAdmin):
     favorite.short_description = 'Раз в избранном'
 
 
-@register(IngredientInRecipe)
-class IngredientInRecipeAdmin(ModelAdmin):
+@register(RecipeIngredient)
+class RecipeIngredientAdmin(ModelAdmin):
     list_display = ('recipe', 'ingredient', 'amount')
 
 

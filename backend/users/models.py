@@ -3,31 +3,23 @@ from django.db import models
 from rest_framework.exceptions import ValidationError
 
 
-class User(AbstractUser):    
+class User(AbstractUser):
     email = models.EmailField(
-        'Адрес электронной почты',
-        max_length=254,
+        verbose_name='Электронная почта',
         unique=True,
-        blank=False,
-        null=False,
-    )
-    username = models.CharField(
-        'Уникальный юзернейм',
-        max_length=150,
-        unique=True,
-        blank=False,
-        null=False,
+        max_length=254
     )
     first_name = models.CharField(
-        'Имя',
+        verbose_name='Имя',
         max_length=150,
-        blank=True,
     )
     last_name = models.CharField(
-        'Фамилия',
+        verbose_name='Фамилия',
         max_length=150,
-        blank=True,
     )
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -41,20 +33,20 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-    
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
         related_name='follower',
-        verbose_name='Подписчик'
+        verbose_name='Подписчик',
+        on_delete=models.CASCADE
     )
     author = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
         related_name='following',
-        verbose_name='Автор'
+        verbose_name='Автор',
+        on_delete=models.CASCADE
     )
 
     def __str__(self):
