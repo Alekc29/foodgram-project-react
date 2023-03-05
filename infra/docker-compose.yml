@@ -3,6 +3,7 @@ services:
 
   frontend:
     image: alekc029/foodgram_frontend:v1.0
+    restart: always
     volumes:
       - ../frontend/:/app/result_build/
 
@@ -27,6 +28,7 @@ services:
       - media_value:/var/html/back_media/
     depends_on:
       - backend
+      - frontend
 
   backend:
     image: alekc029/foodgram_backend:v1.0
