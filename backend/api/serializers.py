@@ -12,7 +12,9 @@ from recipes.models import (Favorite, Ingredient, Recipe,
                             RecipeIngredient, ShoppingCart, Tag)
 from users.models import Follow, User
 
-VALID_SYMBOLS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+VALID_SYMBOLS = (
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+)
 
 
 class UsersCreateSerializer(UserCreateSerializer):
@@ -39,9 +41,9 @@ class UsersCreateSerializer(UserCreateSerializer):
             if symbol not in VALID_SYMBOLS:
                 raise ValidationError(
                     f'Недопустимые символы в сериалайзере: {symbol}'
-                )    
+                )
         return value
-    
+
     def validate_email(self, value):
         try:
             validate_email(value)
