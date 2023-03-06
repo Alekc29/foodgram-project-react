@@ -3,10 +3,13 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
 
-User = get_user_model()
+from users.models import User
 
 
 class Ingredient(models.Model):
+    '''
+    Модель ингредиента содержит поля name и measurement_unit.
+    '''
     name = models.CharField(
         verbose_name='Название ингредиента',
         max_length=100
@@ -25,6 +28,9 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
+    '''
+    Модель тега содержит поля name, color, slug.
+    '''
     name = models.CharField(
         verbose_name='Название',
         max_length=16,
@@ -49,11 +55,26 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
+    '''
+    Модель рецепта содержит поля ingregients, author, tags (связанные поля),
+    image, name, text, cooking_time, pub_date.
+    '''
     ingredients = models.ManyToManyField(
         Ingredient,
         verbose_name='Ингредиенты',
         through='RecipeIngredient',
-        related_name='recipe'
+        related_name='recipes'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='recipes',
+        verbose_name='Автор'
+    )
+    tags = models.ManyToManyField(
+        Tag,
+        verbose_name='Теги',
+        related_name='recipes'
     )
     image = models.ImageField(
         verbose_name='Картинка',
@@ -73,17 +94,6 @@ class Recipe(models.Model):
             message='Время приготовления не может быть менее одной минуты.'),
         )
     )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='recipes',
-        verbose_name='Автор'
-    )
-    tags = models.ManyToManyField(
-        Tag,
-        verbose_name='Теги',
-        related_name='recipes'
-    )
     pub_date = models.DateTimeField(
         auto_now=True,
         verbose_name='Дата публикации'
@@ -99,11 +109,15 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
+    '''
+    Модель ингредиентов в рецепте содержит поля
+    recipe, ingredient (связанные поля), amount.
+    '''
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
-        related_name='recipe_ingredient'
+        related_name='recipes_ingredient'
     )
     ingredient = models.ForeignKey(
         Ingredient,
@@ -134,17 +148,21 @@ class RecipeIngredient(models.Model):
 
 
 class Favorite(models.Model):
+    '''
+    Модель избранных рецептов юзера содержит поля
+    user, recipe (связанные поля).
+    '''
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name='favorite'
+        related_name='favorites'
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепты',
-        related_name='favorite'
+        related_name='favorites'
     )
 
     class Meta:
@@ -162,17 +180,21 @@ class Favorite(models.Model):
 
 
 class ShoppingCart(models.Model):
+    '''
+    Модель рецептов, помещённых в корзину, содержит поля
+    user, recipe (связанные поля).
+    '''
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name='shopping_cart'
+        related_name='shopping_carts'
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепты',
-        related_name='shopping_cart'
+        related_name='shopping_carts'
     )
 
     class Meta:

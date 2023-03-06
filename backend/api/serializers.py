@@ -1,15 +1,18 @@
 import base64
 
 from django.core.files.base import ContentFile
+from django.core.validators import validate_email
 from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import ReadOnlyField, SerializerMethodField
 
 from recipes.models import (Favorite, Ingredient, Recipe,
                             RecipeIngredient, ShoppingCart, Tag)
 from users.models import Follow, User
+
+VALID_SYMBOLS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
 
 
 class UsersCreateSerializer(UserCreateSerializer):
@@ -32,6 +35,18 @@ class UsersCreateSerializer(UserCreateSerializer):
             raise ValidationError(
                 'Невозможно создать пользователя с таким именем!'
             )
+        for symbol in value:
+            if symbol not in VALID_SYMBOLS:
+                raise ValidationError(
+                    f'Недопустимые символы в сериалайзере: {symbol}'
+                )    
+        return value
+    
+    def validate_email(self, value):
+        try:
+            validate_email(value)
+        except ValidationError as e:
+            print("Недопустимый email, детали:", e)
         return value
 
 
@@ -66,12 +81,10 @@ class FollowSerializer(UsersSerializer):
         fields = UsersSerializer.Meta.fields + ('recipes', 'recipes_count')
 
     def get_recipes(self, object):
-        from api.serializers.recipes import RecipeInfoSerializer
-
         request = self.context.get('request')
         context = {'request': request}
         recipe_limit = request.query_params.get('recipe_limit')
-        queryset = object.recipes.all()
+        queryset = object.recipes.prefetch_related('ingredients', 'tags')
         if recipe_limit:
             queryset = queryset[:int(recipe_limit)]
         return RecipeInfoSerializer(queryset, context=context, many=True).data
@@ -108,12 +121,9 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     """Сериализатор для подробного описания ингредиентов в рецепте."""
-    name = serializers.CharField(
-        source='ingredient.name', read_only=True)
-    id = serializers.PrimaryKeyRelatedField(
-        source='ingredient.id', read_only=True)
-    measurement_unit = serializers.CharField(
-        source='ingredient.measurement_unit', read_only=True)
+    id = ReadOnlyField(source='ingredient.id')
+    measurement_unit = ReadOnlyField(source='ingredient.measurement_unit')
+    name = ReadOnlyField(source='ingredient.name')
 
     class Meta:
         model = RecipeIngredient
@@ -144,7 +154,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'name', 'image', 'text', 'cooking_time')
 
     def validate(self, data):
-        list_ingr = [item['ingredient'] for item in data['ingredients']]
+        list_ingr = len(data['ingredients'])
         all_ingredients, distinct_ingredients = (
             len(list_ingr), len(set(list_ingr)))
 

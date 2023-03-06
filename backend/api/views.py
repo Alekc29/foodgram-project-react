@@ -21,6 +21,13 @@ from .serializers import (FavoriteSerializer, FollowSerializer,
                           ShoppingCartSerializer, TagSerializer,
                           UsersSerializer)
 
+COORDINATE_X = 100
+COORDINATE_X_LIST = 80
+COORDINATE_Y = 750
+HEIGHT = 700
+HEIGHT_STEP = 25
+FONT_SIZE = 14
+
 
 class UsersViewSet(UserViewSet):
     """Вьюсет для работы с пользователями и подписками.
@@ -96,7 +103,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для работы с рецептами.
      Обработка запросов создания/получения/редактирования/удаления рецептов
      Добавление/удаление рецепта в избранное и список покупок"""
-    queryset = Recipe.objects.all()
+    queryset = Recipe.objects.select_related('author').prefetch_related(
+        'ingredients', 'tags'
+    )
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
@@ -143,7 +152,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         p = canvas.Canvas(response)
         arial = ttfonts.TTFont('Arial', 'data/arial.ttf')
         pdfmetrics.registerFont(arial)
-        p.setFont('Arial', 14)
+        p.setFont('Arial', FONT_SIZE)
 
         ingredients = RecipeIngredient.objects.filter(
             recipe__shopping_cart__user=request.user).values_list(
@@ -155,14 +164,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 ingr_list[name] = {'amount': amount, 'unit': unit}
             else:
                 ingr_list[name]['amount'] += amount
-        height = 700
+        height = HEIGHT
 
-        p.drawString(100, 750, 'Список покупок')
+        p.drawString(COORDINATE_X, COORDINATE_Y, 'Список покупок')
         for i, (name, data) in enumerate(ingr_list.items(), start=1):
             p.drawString(
-                80, height,
+                COORDINATE_X_LIST, height,
                 f"{i}. {name} – {data['amount']} {data['unit']}")
-            height -= 25
+            height -= HEIGHT_STEP
         p.showPage()
         p.save()
         return response

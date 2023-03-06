@@ -4,6 +4,8 @@ from rest_framework.exceptions import ValidationError
 
 
 class User(AbstractUser):
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
     email = models.EmailField(
         verbose_name='Электронная почта',
         unique=True,
@@ -16,10 +18,7 @@ class User(AbstractUser):
     last_name = models.CharField(
         verbose_name='Фамилия',
         max_length=150,
-    )
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
+    )    
 
     class Meta:
         verbose_name = 'Пользователь'
