@@ -56,10 +56,7 @@ docker-compose exec backend python manage.py createsuperuser
 ```bash
 docker-compose exec backend python manage.py load_data
 ```
-- или наполните базу тестовыми данными (включают посты и пользователей)
-```bash
-docker-compose exec backend python manage.py loaddata data/data.json 
-```
+
 - Стандартная админ-панель Django доступна по адресу [`https://localhost/admin/`](https://localhost/admin/)
 - Документация к проекту доступна по адресу [`https://localhost/api/docs/`](`https://localhost/api/docs/`)
 
