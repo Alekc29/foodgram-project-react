@@ -4,7 +4,7 @@ from django.core.files.base import ContentFile
 from django.core.validators import validate_email
 from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ReadOnlyField, SerializerMethodField
 
@@ -82,6 +82,21 @@ class FollowSerializer(UsersSerializer):
     class Meta(UsersSerializer.Meta):
         fields = UsersSerializer.Meta.fields + ('recipes', 'recipes_count')
 
+    def validate(self, data):
+        author = self.instance
+        user = self.context.get('request').user
+        if Follow.objects.filter(author=author, user=user).exists():
+            raise ValidationError(
+                detail='Вы уже подписаны на этого пользователя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+        if user == author:
+            raise ValidationError(
+                detail='Вы не можете подписаться на самого себя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+        return data
+    
     def get_recipes(self, object):
         request = self.context.get('request')
         context = {'request': request}
@@ -156,10 +171,12 @@ class RecipeSerializer(serializers.ModelSerializer):
                   'name', 'image', 'text', 'cooking_time')
 
     def validate(self, data):
-        list_ingr = len(data['ingredients'])
+        # создаём список ингредиентов в рецепте, ингредиенты могут повторяться.
+        list_ingr = [item['ingredient'] for item in data['ingredients']]
+        # определяем длину списка ингредиентов и длину его множества.
         all_ingredients, distinct_ingredients = (
             len(list_ingr), len(set(list_ingr)))
-
+        
         if all_ingredients != distinct_ingredients:
             raise ValidationError(
                 {'error': 'Ингредиенты должны быть уникальными'}
