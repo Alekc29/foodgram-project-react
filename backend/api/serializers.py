@@ -96,7 +96,7 @@ class FollowSerializer(UsersSerializer):
                 code=status.HTTP_400_BAD_REQUEST
             )
         return data
-    
+
     def get_recipes(self, object):
         request = self.context.get('request')
         context = {'request': request}
@@ -176,7 +176,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         # определяем длину списка ингредиентов и длину его множества.
         all_ingredients, distinct_ingredients = (
             len(list_ingr), len(set(list_ingr)))
-        
         if all_ingredients != distinct_ingredients:
             raise ValidationError(
                 {'error': 'Ингредиенты должны быть уникальными'}
