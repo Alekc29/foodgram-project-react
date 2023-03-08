@@ -24,8 +24,8 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
-      - static_value:/var/html/back_static/
-      - media_value:/var/html/back_media/
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
     depends_on:
       - backend
       - frontend
@@ -34,8 +34,8 @@ services:
     image: alekc029/foodgram_backend:v1.0
     restart: always
     volumes:
-      -  static_value:/app/back_static/
-      -  media_value:/app/back_media/
+      -  static_value:/app/static/
+      -  media_value:/app/media/
       -  docs:/app/api/docs/
     depends_on:
       - db
