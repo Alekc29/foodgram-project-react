@@ -100,7 +100,7 @@ class FollowSerializer(UsersSerializer):
     def get_recipes(self, object):
         request = self.context.get('request')
         context = {'request': request}
-        recipe_limit = request.query_params.get('recipe_limit')
+        recipe_limit = request.GET.get('recipes_limit')
         queryset = object.recipes.prefetch_related('ingredients', 'tags')
         if recipe_limit:
             queryset = queryset[:int(recipe_limit)]
