@@ -47,20 +47,19 @@ class Follow(models.Model):
         verbose_name='Автор',
         on_delete=models.CASCADE
     )
-
-    def __str__(self):
-        return f'Автор: {self.author}, подписчик: {self.user}'
-
-    def save(self, **kwargs):
-        if self.user == self.author:
-            raise ValidationError("Невозможно подписаться на себя")
-        super().save()
-
+    
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(
                 fields=['author', 'user'],
-                name='unique_follower')
+                name='unique_follower'),
+            models.CheckConstraint(
+                name="%(app_label)s_%(class)s_prevent_self_follow",
+                check=~models.Q(user=models.F('author')),
+            ),
         ]
+
+    def __str__(self):
+        return f'Автор: {self.author}, подписчик: {self.user}'
