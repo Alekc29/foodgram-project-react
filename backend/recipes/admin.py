@@ -1,7 +1,12 @@
-from django.contrib.admin import ModelAdmin, register
+from django.contrib.admin import ModelAdmin, register, TabularInline
 
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
+
+
+class IngredientInline(TabularInline):
+    model = Recipe.ingredients.through
+    extra = 0
 
 
 @register(Ingredient)
@@ -22,7 +27,10 @@ class RecipeIngredientAdmin(ModelAdmin):
 
 @register(Recipe)
 class RecipeAdmin(ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
+    prepopulated_fields = {'name': ('slug',)}
+    inlines = (
+        IngredientInline,
+    )
     list_display = ('name', 'author', 'pub_date', 'display_tags', 'favorite')
     list_filter = ('name', 'author', 'tags')
     search_fields = ('name',)
@@ -36,9 +44,7 @@ class RecipeAdmin(ModelAdmin):
     def display_tags(self, obj):
         return ', '.join([tag.name for tag in obj.tags.all()])
     display_tags.short_description = 'Теги'
-    inlines = [
-        RecipeIngredientAdmin,
-    ]
+    
 
     def favorite(self, obj):
         return obj.favorite.count()
