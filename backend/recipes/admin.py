@@ -27,7 +27,6 @@ class RecipeIngredientAdmin(ModelAdmin):
 
 @register(Recipe)
 class RecipeAdmin(ModelAdmin):
-    prepopulated_fields = {Tag.slug: ('name',)}
     inlines = (
         IngredientInline,
     )
