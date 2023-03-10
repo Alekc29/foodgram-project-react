@@ -21,6 +21,12 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+        constraints = [
+            UniqueConstraint(
+                fields=('measurement_unit', 'name'),
+                name='Такой ингредиент уже существует.'
+            )
+        ]
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
@@ -122,6 +128,7 @@ class RecipeIngredient(models.Model):
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиент',
+        related_name='recipes_ingredient'
     )
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
@@ -137,7 +144,7 @@ class RecipeIngredient(models.Model):
         constraints = [
             UniqueConstraint(
                 fields=('recipe', 'ingredient'),
-                name='unique ingredient for recipe'
+                name='Этот ингредиент уже добавлен в рецепт.'
             )
         ]
 
@@ -170,7 +177,7 @@ class Favorite(models.Model):
         constraints = (
             UniqueConstraint(
                 fields=('user', 'recipe'),
-                name='unique favorite'
+                name='Этот рецепт уже добавлен в избранное.'
             ),
         )
 
@@ -202,7 +209,7 @@ class ShoppingCart(models.Model):
         constraints = (
             UniqueConstraint(
                 fields=('user', 'recipe'),
-                name='unique recipe in shopping cart'
+                name='Этот рецепт уже добавлен в корзину.'
             ),
         )
 
