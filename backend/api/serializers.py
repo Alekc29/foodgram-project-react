@@ -220,13 +220,13 @@ class GetRecipeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     author = UsersSerializer(read_only=True)
     ingredients = RecipeIngredientSerializer(read_only=True, many=True,
-                                             source='recipe_ingredient')
+                                             source='recipes_ingredient')
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredient',
+        fields = ('id', 'tags', 'author', 'ingredients',
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
 
