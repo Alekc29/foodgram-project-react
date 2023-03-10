@@ -167,7 +167,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients',
+        fields = ('id', 'tags', 'author', 'ingredient',
                   'name', 'image', 'text', 'cooking_time')
 
     def validate(self, data):
@@ -186,7 +186,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         RecipeIngredient.objects.bulk_create(
             RecipeIngredient(
                 recipe=recipe,
-                ingredient=ingredient.get('ingredient'),
+                ingredient=ingredient.get('ingredients'),
                 amount=ingredient.get('amount')
             ) for ingredient in ingredients)
 
@@ -194,7 +194,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context.get('request').user
         tags = validated_data.pop('tags')
-        ingredients = validated_data.pop('ingredients')
+        ingredients = validated_data.pop('ingredient')
         recipe = Recipe.objects.create(author=user,
                                        **validated_data)
         recipe.tags.set(tags)
@@ -204,7 +204,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         tags = validated_data.pop('tags')
-        ingredients = validated_data.pop('ingredients')
+        ingredients = validated_data.pop('ingredient')
         RecipeIngredient.objects.filter(recipe=instance).delete()
         instance.tags.set(tags)
         self.get_ingredients(instance, ingredients)
