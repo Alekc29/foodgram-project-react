@@ -55,9 +55,9 @@ class Follow(models.Model):
                 fields=['author', 'user'],
                 name='unique_follower'),
             models.CheckConstraint(
-                name="%(app_label)s_%(class)s_prevent_self_follow",
-                check=~models.Q(user=models.F('author')),
-            ),
+                check=~models.Q(author=models.F('user')),
+                name='Невозможно подписаться на себя.'
+            )
         ]
 
     def __str__(self):
