@@ -259,7 +259,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         context = {'request': self.context.get('request')}
-        return RecipeInfoSerializer(instance.recipes, context=context).data
+        return RecipeInfoSerializer(instance.recipe, context=context).data
 
 
 class ShoppingCartSerializer(FavoriteSerializer):
