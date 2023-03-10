@@ -48,8 +48,14 @@ docker-compose up -d --build
 - Выполните миграции, соберите статику, создайте суперпользователя
 ```bash
 docker-compose exec backend python manage.py makemigrations
+```
+```bash
 docker-compose exec backend python manage.py migrate
+```
+```bash
 docker-compose exec backend python manage.py collectstatic --no-input
+```
+```bash
 docker-compose exec backend python manage.py createsuperuser
 ```
 - Наполните базу данных ингредиентами и тегами
