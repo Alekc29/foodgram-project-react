@@ -74,7 +74,7 @@ class UsersSerializer(UserSerializer):
         return Follow.objects.filter(user=user, author=object.id).exists()
 
 
-class FollowSerializer(UsersSerializer):
+class FollowSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления/удаления подписки, просмотра подписок."""
     username = ReadOnlyField(source='author.username')
     email = ReadOnlyField(source='author.email')
