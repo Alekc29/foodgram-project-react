@@ -76,11 +76,27 @@ class UsersSerializer(UserSerializer):
 
 class FollowSerializer(UsersSerializer):
     """Сериализатор для добавления/удаления подписки, просмотра подписок."""
-    recipes = SerializerMethodField(read_only=True)
-    recipes_count = SerializerMethodField(read_only=True)
+    username = ReadOnlyField(source='author.username')
+    email = ReadOnlyField(source='author.email')
+    first_name = ReadOnlyField(source='author.first_name')
+    last_name = ReadOnlyField(source='author.last_name')
+    id = ReadOnlyField(source='author.id')
+    is_subscribed = SerializerMethodField()
+    recipes = SerializerMethodField()
+    recipes_count = SerializerMethodField()
 
-    class Meta(UsersSerializer.Meta):
-        fields = UsersSerializer.Meta.fields + ('recipes', 'recipes_count')
+    class Meta:
+        model = Follow
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+            'recipes',
+            'recipes_count'
+        )
 
     def validate(self, data):
         author = self.instance
