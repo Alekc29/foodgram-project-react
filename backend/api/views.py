@@ -35,7 +35,7 @@ class UsersViewSet(UserViewSet):
     создание/получение/удаления подписок."""
     queryset = User.objects.all()
     serializer_class = UsersSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AllowAny,)
     pagination_class = LimitPagination
     http_method_names = ['get', 'post', 'delete', 'head']
 
@@ -141,7 +141,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST', 'DELETE'],
             detail=True,
-            permission_classes=[IsAuthorOrReadOnly])
+            permission_classes=[AllowAny])
     def shopping_cart(self, request, pk):
         return self.action_post_delete(pk, ShoppingCartSerializer)
 
