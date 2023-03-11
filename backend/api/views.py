@@ -102,7 +102,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
      Добавление/удаление рецепта в избранное и список покупок"""
     queryset = Recipe.objects.select_related('author').prefetch_related(
         'ingredients', 'tags'
-    )
+    ).all()
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
