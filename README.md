@@ -104,6 +104,9 @@ python manage.py runserver
 ```
 
 
-Проект доступен по адресу: [foodgramer.zapto.org](https://foodgramer.zapto.org)
+Проект доступен по адресу Ip: 84.252.142.25: [foodgramer.zapto.org](https://foodgramer.zapto.org/)
+
+email_admin: admin@yandex.ru
+password_admin: admin
 
 Документация к API проекта: [foodgramer.zapto.org/api/docs/](https://foodgramer.zapto.org/api/docs/)
