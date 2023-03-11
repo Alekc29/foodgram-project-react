@@ -151,7 +151,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         arial = ttfonts.TTFont('Arial', 'data/arial.ttf')
         pdfmetrics.registerFont(arial)
         p.setFont('Arial', FONT_SIZE)
- 
+
         ingredients = RecipeIngredient.objects.filter(
             recipe__shopping_carts__user=request.user).values_list(
             'ingredient__name', 'amount', 'ingredient__measurement_unit')
