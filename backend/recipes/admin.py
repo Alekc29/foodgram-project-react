@@ -45,7 +45,7 @@ class RecipeAdmin(ModelAdmin):
     display_tags.short_description = 'Теги'
 
     def favorite(self, obj):
-        return obj.favorite.count()
+        return obj.favorites.count()
     favorite.short_description = 'Раз в избранном'
 
 

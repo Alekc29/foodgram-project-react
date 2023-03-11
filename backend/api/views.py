@@ -107,7 +107,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (AllowAny,)
     pagination_class = LimitPagination
 
     def action_post_delete(self, pk, serializer_class):
@@ -133,15 +133,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Этого рецепта нет в списке'},
                             status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=['POST', 'DELETE'], detail=True)
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsAuthorOrReadOnly])
     def favorite(self, request, pk):
         return self.action_post_delete(pk, FavoriteSerializer)
 
-    @action(methods=['POST', 'DELETE'], detail=True)
+    @action(methods=['POST', 'DELETE'],
+            detail=True,
+            permission_classes=[IsAuthorOrReadOnly])
     def shopping_cart(self, request, pk):
         return self.action_post_delete(pk, ShoppingCartSerializer)
 
-    @action(detail=False, permission_classes=[AllowAny])
+    @action(detail=False)
     def download_shopping_cart(self, request):
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = (
