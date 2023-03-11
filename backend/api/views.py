@@ -141,7 +141,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk):
         return self.action_post_delete(pk, ShoppingCartSerializer)
 
-    @action(detail=False)
+    @action(detail=False, permission_classes=[AllowAny])
     def download_shopping_cart(self, request):
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = (
@@ -151,9 +151,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         arial = ttfonts.TTFont('Arial', 'data/arial.ttf')
         pdfmetrics.registerFont(arial)
         p.setFont('Arial', FONT_SIZE)
-
+ 
         ingredients = RecipeIngredient.objects.filter(
-            recipe__shopping_cart__user=request.user).values_list(
+            recipe__shopping_carts__user=request.user).values_list(
             'ingredient__name', 'amount', 'ingredient__measurement_unit')
 
         ingr_list = {}

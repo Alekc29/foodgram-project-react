@@ -113,6 +113,9 @@ class FollowSerializer(UsersSerializer):
             )
         return data
 
+    def get_is_subscribed(self, obj):
+        return True
+
     def get_recipes(self, object):
         request = self.context.get('request')
         context = {'request': request}
@@ -236,7 +239,7 @@ class GetRecipeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     author = UsersSerializer(read_only=True)
     ingredients = RecipeIngredientSerializer(read_only=True, many=True,
-                                             source='recipe_ingredient')
+                                             source='recipes_ingredient')
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
 

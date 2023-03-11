@@ -64,7 +64,7 @@ docker-compose exec backend python manage.py load_data
 ```
 
 - Стандартная админ-панель Django доступна по адресу [`https://localhost/admin/`](https://localhost/admin/)
-- Документация к проекту доступна по адресу [`https://localhost/api/docs/`](`https://localhost/api/docs/`)
+- Документация к проекту доступна по адресу [`https://localhost/api/docs/`](https://localhost/api/docs/)
 
 #### Запуск API проекта в dev-режиме
 
@@ -104,9 +104,9 @@ python manage.py runserver
 ```
 
 
-Проект доступен по адресу Ip: 84.252.142.25: [foodgramer.zapto.org](https://foodgramer.zapto.org/)
+Проект доступен по адресу Ip: 84.252.142.25: [foodgramer.zapto.org](foodgramer.zapto.org/)
 
 email_admin: admin@yandex.ru
 password_admin: admin
 
-Документация к API проекта: [foodgramer.zapto.org/api/docs/](https://foodgramer.zapto.org/api/docs/)
+Документация к API проекта: [foodgramer.zapto.org/api/docs/](foodgramer.zapto.org/api/docs/)
