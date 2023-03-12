@@ -159,7 +159,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'amount')
- 
+
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор создания рецепта.
