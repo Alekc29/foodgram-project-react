@@ -95,10 +95,6 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AllowAny,)
     pagination_class = None
 
-    @action(detail=False)
-    def create(self, request):
-        return Tag.objects.all()
-
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для работы с рецептами.
