@@ -90,7 +90,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для обработки запросов на получение тегов."""
-    queryset = Tag.objects.filter(recipes__isnull=False)
+    queryset = Tag.objects.filter(recipes__isnull=False).distinct()
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
     pagination_class = None
