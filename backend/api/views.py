@@ -9,7 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from recipes.models import Ingredient, Recipe, RecipeIngredient
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 from users.models import Follow, User
 
 from .filters import IngredientFilter, RecipeFilter
@@ -90,7 +90,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для обработки запросов на получение тегов."""
-    queryset = Recipe.objects.distinct('tags')
+    queryset = Tag.objects.filter(recipes__isnull=False)
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
     pagination_class = None
