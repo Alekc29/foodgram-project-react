@@ -351,7 +351,7 @@ class Api {
         method: 'POST',
         headers: {
           ...this._headers,
-          'authorization': `Token ${token}`
+          ...authorization
         }
       }
     ).then(this.checkResponse)
