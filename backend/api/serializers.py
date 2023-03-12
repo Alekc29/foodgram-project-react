@@ -159,7 +159,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'amount')
-
+ 
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор создания рецепта.
@@ -168,9 +168,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = AddIngredientSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.filter(
-            recipe__isnull=False
-        ).distinct(),
+        queryset=Recipe.objects.distinct('tags'),
         many=True,
     )
 
