@@ -161,17 +161,25 @@ class AddIngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'amount')
 
 
+class AddTagSerializer(serializers.ModelSerializer):
+    """Сериализатор для добавления тегов при создании рецепта."""
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        source='name')
+
+    class Meta:
+        model = Tag
+        fields = '__all__'
+        read_only_fields = ('__all__',)
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор создания рецепта.
     Валидирует ингредиенты ответ возвращает GetRecipeSerializer."""
     author = UsersSerializer(read_only=True)
     image = Base64ImageField()
     ingredients = AddIngredientSerializer(many=True)
-    tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(),
-        source='name',
-        many=True,
-    )
+    tags = AddTagSerializer(many=True)
 
     class Meta:
         model = Recipe
