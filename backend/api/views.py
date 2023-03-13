@@ -15,10 +15,10 @@ from users.models import Follow, User
 from .filters import IngredientFilter, RecipeFilter
 from .paginations import LimitPagination
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (FavoriteSerializer, FollowSerializer,
-                          IngredientSerializer, RecipeSerializer,
-                          ShoppingCartSerializer, TagSerializer,
-                          UsersSerializer)
+from .serializers import (FavoriteSerializer,
+                          FollowSerializer, IngredientSerializer,
+                          RecipeSerializer, ShoppingCartSerializer,
+                          TagSerializer, UsersSerializer)
 
 COORDINATE_X = 100
 COORDINATE_X_LIST = 80
@@ -90,7 +90,16 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для обработки запросов на получение тегов."""
-    queryset = Tag.objects.filter(recipes__isnull=False).distinct()
+    def get_queryset(self):
+        queryset = None
+        slug = self.kwargs.get('slug')
+        if slug == 'create':
+            queryset = Tag.objects.all()
+        else:
+            queryset = Tag.objects.filter(recipes__isnull=False).distinct()
+        return queryset
+    
+    queryset = get_queryset()
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
     pagination_class = None
