@@ -90,16 +90,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для обработки запросов на получение тегов."""
-    def get_queryset(self):
-        queryset = None
-        slug = self.kwargs.get('slug')
-        if slug == 'create':
-            queryset = Tag.objects.all()
-        else:
-            queryset = Tag.objects.filter(recipes__isnull=False).distinct()
-        return queryset
-
-    queryset = get_queryset()
+    queryset = Tag.objects.filter(recipes__isnull=False).distinct()
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
     pagination_class = None
@@ -115,7 +106,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthorOrReadOnly,)
     pagination_class = LimitPagination
 
     def action_post_delete(self, pk, serializer_class):
@@ -142,14 +133,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['POST', 'DELETE'],
-            detail=True,
-            permission_classes=[IsAuthorOrReadOnly])
+            detail=True)
     def favorite(self, request, pk):
         return self.action_post_delete(pk, FavoriteSerializer)
 
     @action(methods=['POST', 'DELETE'],
-            detail=True,
-            permission_classes=[AllowAny])
+            detail=True)
     def shopping_cart(self, request, pk):
         return self.action_post_delete(pk, ShoppingCartSerializer)
 
