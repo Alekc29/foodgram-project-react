@@ -98,7 +98,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
         else:
             queryset = Tag.objects.filter(recipes__isnull=False).distinct()
         return queryset
-    
+
     queryset = get_queryset()
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
