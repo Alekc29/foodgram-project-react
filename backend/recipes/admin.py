@@ -31,7 +31,8 @@ class RecipeAdmin(ModelAdmin):
         IngredientInline,
     )
     list_display = ('name', 'author', 'pub_date', 'display_tags', 'favorite')
-    list_filter = ('name', 'author', 'tags')
+    list_filter = ('name', 'author')
+    filter_horizontal = ('tags',)
     search_fields = ('name',)
     readonly_fields = ('favorite',)
     fields = ('image',
